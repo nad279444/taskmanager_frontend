@@ -12,6 +12,13 @@ function Task() {
     },
   ]);
 
+  const handleDelete = (index) => {
+    console.log(index);
+    const updatedItems = items.filter((elem) => {
+      return index !== elem.id;
+    });
+    setitems(updatedItems);
+ };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!inputTitle || !inputDesc) {
@@ -74,6 +81,7 @@ function Task() {
             />
             <button className="btn btn-primary my-2">Save</button>
           </form>
+           {/* list of tasks */}
           {items.map((elem) => {
             return (
               <div
@@ -85,7 +93,27 @@ function Task() {
                     <h5>{elem.name}</h5>
                     <p>{elem.desc}</p>
                   </div>
+                  {/* edit button */}
+                  <div className="d-flex align-items-center">
+                   <button
+                     className="btn btn-primary mx-2"
+                     onClick={() => handleEdit(elem.id)}
+                   >
+                     Edit
+                   </button>
+                   {/* delete button */}
+                   {showDelete ? (
+                     <button
+                       className="btn btn-danger mx-2"
+                       onClick={() => handleDelete(elem.id)}
+                     >
+                       Delete
+                     </button>
+                   ) : (
+                     ""
+                   )}
                 </div>
+              </div>
               </div>
             );
           })}
