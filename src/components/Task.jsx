@@ -12,6 +12,17 @@ function Task() {
     },
   ]);
 
+  const handleEdit = (id) => {
+    settoggleSubmit(false);
+   let newEditItem = items.find((elem) => {
+      return elem.id === id;
+    });
+    setinputTitle(newEditItem.name);
+    setinputDesc(newEditItem.desc);
+    setisEditItem(id);
+    console.log(newEditItem);
+  };
+
   const handleDelete = (index) => {
     console.log(index);
     const updatedItems = items.filter((elem) => {
