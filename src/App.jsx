@@ -1,5 +1,6 @@
 import './App.css'
 import Header from './components/Header'
+import Task from './components/Task'
 
 // const tasks = [
 //   {id: 1,title:"check order release",description:"check order appropriatly and report",completed:false},
@@ -12,7 +13,10 @@ import Header from './components/Header'
 
 function App() {
   return (
+    <>
     <Header />
+    <Task />
+    </>
   )
 }
 
