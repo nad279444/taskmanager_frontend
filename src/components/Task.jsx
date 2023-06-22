@@ -1,98 +1,195 @@
 import { useState } from "react";
 
-function Task() {
+const Todo = () => {
+  const [showForm, setshowform] = useState(true);
+  const [showNew, setshowNew] = useState(true);
+  const [showDelete, setshowDelete] = useState(true);
+  const [toggleSubmit, settoggleSubmit] = useState(true);
+  const [isEditItem, setisEditItem] = useState(null);
+  const [showList, setshowList] = useState(true);
+  //const [editMessage, seteditMessage] = useState(false);
+  const [deleteMessage, setdeleteMessage] = useState(false);
+  const [setdeleteMessagesuccess] = useState(false);
   const [inputTitle, setinputTitle] = useState("");
   const [inputDesc, setinputDesc] = useState("");
-  const [items, setitems] = useState([
+  const tasks = [
     {
-      id: "001",
-      name: "Default Task",
-      desc: "Default Description",
+      id: 1,
+      name: "check order release",
+      desc: "check order appropriatly and report",
       status: false,
     },
-  ]);
+    {
+      id: 2,
+      name: "go to the market",
+      desc: "going to buy footstuffs",
+      status: false,
+    },
+    { id: 3, name: "read my notes", desc: "must learn coding", status: false },
+    { id: 4, name: "visitation", desc: "must visit my family", status: false },
+  ];
 
-  const handleEdit = (id) => {
-    settoggleSubmit(false);
-   let newEditItem = items.find((elem) => {
-      return elem.id === id;
-    });
-    setinputTitle(newEditItem.name);
-    setinputDesc(newEditItem.desc);
-    setisEditItem(id);
-    console.log(newEditItem);
+  const [items, setitems] = useState(tasks);
+
+  //   HANDLING INPUT FIELDS
+  const handleInput = (e) => {
+    setinputTitle(e.target.value);
   };
+  const handleInputdesc = (e) => {
+    setinputDesc(e.target.value);
+  };
+  //   HANDLING INPUT FIELDS
 
+  //   SUBMITTING FORM
+  const handleSubmit = (e) => {
+    setshowList(true);
+    setshowNew(true);
+
+    e.preventDefault();
+    if (!inputTitle || !inputDesc) {
+      alert("fill data");
+      showList(false);
+    } else if (inputTitle && !toggleSubmit) {
+      setitems(
+        items.map((elem) => {
+          if (elem.id === isEditItem) {
+            return { ...elem, name: inputTitle, desc: inputDesc };
+          }
+          return elem;
+        })
+      );
+
+      setinputTitle("");
+      setinputDesc("");
+      settoggleSubmit(true);
+      setshowform(false);
+      setshowDelete(true);
+    } else {
+      const allinputTitle = {
+        id: new Date().getTime().toString(),
+        name: inputTitle,
+        desc: inputDesc,
+      };
+      setitems([allinputTitle, ...items]);
+      setinputTitle("");
+      setinputDesc("");
+      setshowform(false);
+    }
+  };
+  //   SUBMITTING FORM
+
+  //   DELETE
   const handleDelete = (index) => {
     console.log(index);
     const updatedItems = items.filter((elem) => {
       return index !== elem.id;
     });
-    setitems(updatedItems);
- };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!inputTitle || !inputDesc) {
-      alert("fill data");
-    } else {
-      const allInputData = {
-        id: new Date().getTime().toString(),
-        name: inputTitle,
-        desc: inputDesc,
-      };
-      setitems([allInputData, ...items]);
-    }
-  };
+    setdeleteMessage(true);
 
-  const handleInputTitle = (e) => {
-    setinputTitle(e.target.value);
+    setTimeout(() => {
+      setitems(updatedItems);
+      setdeleteMessage(false);
+    }, 2000);
+    setdeleteMessagesuccess(false);
   };
+  //   DELETE
 
-  const handleInputDesc = (e) => {
-    setinputDesc(e.target.value);
+  //   EDIT
+  const handleEdit = (id) => {
+    setshowList(false);
+    setshowDelete(false);
+    setshowNew(false);
+    setshowform(true);
+
+    settoggleSubmit(false);
+    let newEditItem = items.find((elem) => {
+      return elem.id === id;
+    });
+    setinputTitle(newEditItem.name);
+    setinputDesc(newEditItem.desc);
+    // setshowDelete(true)
+
+    setisEditItem(id);
+    console.log(newEditItem);
   };
+  //   EDIT
 
+  // ADD NEW TASK
+  const handleAdd = () => {
+    //   alert("hello")
+    setshowform(true);
+    setshowList(true);
+    setshowNew(false);
+  };
+  // ADD NEW TASK
   return (
     <>
-      <div className="container">
-        <div className="col-12 text-end">
-          <button className="btn btn-primary ">Add New Task</button>
-        </div>
-      </div>
-      <div className="container border rounded d-flex justify-content-center shadow p-3 mb-5 bg-white rounded">
-        <div className="row">
-          <div className="text-center">
-            <h2></h2>
+      {showNew ? (
+        <div className="container">
+          <div className="col-12 text-end">
+            <button className="btn btn-primary " onClick={handleAdd}>
+              New Task
+            </button>
           </div>
+        </div>
+      ) : (
+        ""
+      )}
 
-          <form className="col-12 p-2" onSubmit={handleSubmit}>
-            <label htmlFor="title" className="my-2">
-              Enter Title
-            </label>
-            <input
-              type="text"
-              name="Title"
-              id="title"
-              placeholder="Title"
-              className="w-100 my-1 p-2"
-              onChange={handleInputTitle}
-              value={inputTitle}
-            />
-            <label className="my-2" htmlFor="description">
-              Enter Description
-            </label>
-            <input
-              type="text"
-              name="description"
-              id="description"
-              placeholder="Description"
-              className="w-100 my-1 p-2"
-              onClick={handleInputDesc}
-              value={inputDesc}
-            />
-            <button className="btn btn-primary my-2">Save</button>
-          </form>
-           {/* list of tasks */}
+      {showForm ? (
+        <>
+          <div className="container border rounded d-flex justify-content-center shadow p-3 mb-5 bg-white rounded">
+            <div className="row">
+              <div className="text-center">
+                <h2>{toggleSubmit ? "Add Task" : " Edit Task"}</h2>
+              </div>
+              <form className="col-12 p-2" onSubmit={handleSubmit}>
+                <label htmlFor="title" className="ms-2">
+                  Enter Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  placeholder="Title"
+                  className="w-100 my-1 p-2"
+                  onChange={handleInput}
+                  value={inputTitle}
+                />
+                <label className="my-2" htmlFor="description">
+                  Enter Description
+                </label>
+                <input
+                  type="text"
+                  name="description"
+                  id="description"
+                  placeholder="Description"
+                  className="w-100 my-1 p-2"
+                  onChange={handleInputdesc}
+                  value={inputDesc}
+                />
+                {/* <div className="text-center"> */}
+                {toggleSubmit ? (
+                  <button className="btn btn-primary my-2">Save</button>
+                ) : (
+                  <button className="btn btn-primary my-2">Update</button>
+                )}
+                {/* </div> */}
+              </form>
+            </div>
+          </div>
+        </>
+      ) : (
+        ""
+      )}
+
+      {showList ? (
+        <div className="container py-1">
+          {deleteMessage ? (
+            <p className="text-center text-danger">Item Deleted Successfully</p>
+          ) : (
+            ""
+          )}
           {items.map((elem) => {
             return (
               <div
@@ -101,37 +198,38 @@ function Task() {
               >
                 <div className="col-12 d-flex justify-content-between align-items-center">
                   <div>
-                    <h5>{elem.name}</h5>
+                    <h4>{elem.name}</h4>
                     <p>{elem.desc}</p>
                   </div>
-                  {/* edit button */}
-                  <div className="d-flex align-items-center">
-                   <button
-                     className="btn btn-primary mx-2"
-                     onClick={() => handleEdit(elem.id)}
-                   >
-                     Edit
-                   </button>
-                   {/* delete button */}
-                   {showDelete ? (
-                     <button
-                       className="btn btn-danger mx-2"
-                       onClick={() => handleDelete(elem.id)}
-                     >
-                       Delete
-                     </button>
-                   ) : (
-                     ""
-                   )}
+
+                  <div className="d-flex flex-row-reverse">
+                    <button
+                      className="btn btn-primary mx-2"
+                      onClick={() => handleEdit(elem.id)}
+                    >
+                      Edit
+                    </button>
+                    {showDelete ? (
+                      <button
+                        className="btn btn-danger mx-2"
+                        onClick={() => handleDelete(elem.id)}
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
-              </div>
               </div>
             );
           })}
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </>
   );
-}
+};
 
-export default Task;
+export default Todo;
