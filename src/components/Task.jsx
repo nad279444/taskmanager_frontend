@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 
-const Todo = () => {
+
+
+const Task = (props) => {
+  console.log(props.data)
+  
+  useEffect(() => {
+    setitems(props.data)
+  },[props.data])
+
+
   const [showForm, setshowform] = useState(true);
   const [showNew, setshowNew] = useState(true);
   const [showDelete, setshowDelete] = useState(true);
@@ -12,25 +22,23 @@ const Todo = () => {
   const [setdeleteMessagesuccess] = useState(false);
   const [inputTitle, setinputTitle] = useState("");
   const [inputDesc, setinputDesc] = useState("");
-  const tasks = [
+  const todos = [
     {
       id: 1,
-      name: "check order release",
-      desc: "check order appropriatly and report",
-      status: false,
+      title: "check order release",
+      description: "check order appropriatly and report",
     },
     {
       id: 2,
-      name: "go to the market",
-      desc: "going to buy footstuffs",
-      status: false,
+      title: "go to the market",
+      description: "going to buy footstuffs",
     },
-    { id: 3, name: "read my notes", desc: "must learn coding", status: false },
-    { id: 4, name: "visitation", desc: "must visit my family", status: false },
+   
   ];
 
-  const [items, setitems] = useState(tasks);
-
+  const [items, setitems] = useState(todos);
+  
+  
   //   HANDLING INPUT FIELDS
   const handleInput = (e) => {
     setinputTitle(e.target.value);
@@ -42,10 +50,10 @@ const Todo = () => {
 
   //   SUBMITTING FORM
   const handleSubmit = (e) => {
-    setshowList(true);
+    setshowList(true)
     setshowNew(true);
-
     e.preventDefault();
+
     if (!inputTitle || !inputDesc) {
       alert("fill data");
       showList(false);
@@ -53,12 +61,11 @@ const Todo = () => {
       setitems(
         items.map((elem) => {
           if (elem.id === isEditItem) {
-            return { ...elem, name: inputTitle, desc: inputDesc };
+            return { ...elem, title: inputTitle, description: inputDesc };
           }
           return elem;
         })
       );
-
       setinputTitle("");
       setinputDesc("");
       settoggleSubmit(true);
@@ -67,8 +74,8 @@ const Todo = () => {
     } else {
       const allinputTitle = {
         id: new Date().getTime().toString(),
-        name: inputTitle,
-        desc: inputDesc,
+        title: inputTitle,
+        description: inputDesc,
       };
       setitems([allinputTitle, ...items]);
       setinputTitle("");
@@ -105,8 +112,8 @@ const Todo = () => {
     let newEditItem = items.find((elem) => {
       return elem.id === id;
     });
-    setinputTitle(newEditItem.name);
-    setinputDesc(newEditItem.desc);
+    setinputTitle(newEditItem.title);
+    setinputDesc(newEditItem.description);
     // setshowDelete(true)
 
     setisEditItem(id);
@@ -198,8 +205,8 @@ const Todo = () => {
               >
                 <div className="col-12 d-flex justify-content-between align-items-center">
                   <div>
-                    <h4>{elem.name}</h4>
-                    <p>{elem.desc}</p>
+                    <h4>{elem.title}</h4>
+                    <p>{elem.description}</p>
                   </div>
 
                   <div className="d-flex flex-row-reverse">
@@ -232,4 +239,8 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+Task.propTypes = {
+  data: PropTypes.object
+};
+
+export default Task;
