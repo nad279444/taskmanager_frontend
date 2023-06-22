@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import  { useMutation } from 'react-query'
+import axios from "axios";
+
 
 
 
 const Task = (props) => {
-  console.log(props.data)
+  const mutation = useMutation({
+    mutationFn: (values) => {
+      return axios.post('http://127.0.0.1:8000/api/tasks/',values)
+    }
+  })
   
   useEffect(() => {
     setitems(props.data)
@@ -77,6 +84,7 @@ const Task = (props) => {
         title: inputTitle,
         description: inputDesc,
       };
+     mutation.mutate({id: new Date(),title: inputTitle,description: inputDesc})
       setitems([allinputTitle, ...items]);
       setinputTitle("");
       setinputDesc("");
@@ -240,7 +248,7 @@ const Task = (props) => {
 };
 
 Task.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.array
 };
 
 export default Task;

@@ -5,4 +5,10 @@ async function fetchTasks() {
     return data
 }
     
+export async function postTasks() {
+    const { posts } = await axios.post('http://127.0.0.1:8000/api/tasks/')
+    return posts
+}
+    
+
 export default fetchTasks;
